@@ -78,18 +78,14 @@ app.use('/auth', loginRouter);
  * JOB 1: Runs at 00:00 (Midnight)
  * This function runs at midnight to enforce accountability.
  * 1. Finds all unique users.
- * 2. For each user, counts incomplete goals (due yesterday) that are NOT marked for accountability.
+ * 2. For each user, counts active goals (is_completed = false) where the user 
+ * failed to check in (accountability = false).
  * 3. Updates a number of buildings' status to "destroyed" equal to that count.
  */
 const handleMidnightAccountabilityCheck = async () => {
   console.log('Running 00:00 accountability check...');
   
   try {
-    // Get yesterday's date in 'YYYY-MM-DD' format
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayString = yesterday.toISOString().split('T')[0];
-
     // 1. Get all distinct user_ids from the goals table
     const { data: users, error: usersError } = await supabase
       .from('goals')
@@ -105,14 +101,13 @@ const handleMidnightAccountabilityCheck = async () => {
       // A "failed" goal is:
       // - Not completed (is_completed = false)
       // - Not accountable (accountability = false)
-      // - Due on or before yesterday (target_date <= yesterday)
+      // We no longer check the target_date for the daily punishment.
       const { count, error: countError } = await supabase
         .from('goals')
         .select('*', { count: 'exact', head: true }) // Special syntax to get only the count
         .eq('user_id', userId)
         .eq('is_completed', false)
-        .eq('accountability', false)
-        .lte('target_date', yesterdayString); // lte = less than or equal to
+        .eq('accountability', false); // <-- We removed the .lte('target_date', ...) check
 
       if (countError) {
         console.error(`Error counting goals for user ${userId}:`, countError.message);
@@ -127,7 +122,7 @@ const handleMidnightAccountabilityCheck = async () => {
         // 4. Find that many buildings to destroy
         // (This finds the 'oldest' buildings by default that are not already destroyed)
         const { data: buildingsToUpdate, error: buildingsError } = await supabase
-          .from('building') // Assuming your table is named 'building'
+          .from('building') 
           .select('id')
           .eq('user_id', userId)
           .neq('status', 'destroyed') // Only select buildings NOT already destroyed
@@ -166,6 +161,7 @@ const handleMidnightAccountabilityCheck = async () => {
   }
 };
 
+
 /**
  * JOB 2: Runs at 00:01 (12:01 AM)
  * This function runs at 12:01 AM to reset accountability status for all goals.
@@ -189,6 +185,43 @@ const handleGoalAccountabilityReset = async () => {
 };
 
 
+/**
+ * JOB 3: Runs at 00:02 (12:02 AM)
+ * This function auto-completes goals where the target_date is today.
+ */
+const handleAutoCompletionCheck = async () => {
+  console.log('Running 00:02 auto-completion check...');
+  
+  try {
+    // Get today's date in 'YYYY-MM-DD' format
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+
+    console.log(`Checking for goals with target_date = ${todayString} to mark as complete.`);
+
+    // 1. Find all goals due today that are not yet completed
+    const { data, error } = await supabase
+      .from('goals')
+      .update({ is_completed: true }) // Set is_completed to true
+      .eq('target_date', todayString) // Where the target_date is today
+      .eq('is_completed', false)      // And it's not already complete
+      .select(); // Return the updated rows
+
+    if (error) {
+      console.error('Error auto-completing goals:', error.message);
+    } else {
+      if (data && data.length > 0) {
+        console.log(`Successfully auto-completed ${data.length} goals for ${todayString}.`);
+      } else {
+        console.log(`No goals found to auto-complete for ${todayString}.`);
+      }
+    }
+  } catch (error) {
+    console.error('An error occurred during the auto-completion check:', error);
+  }
+};
+
+
 // Schedule Job 1 to run at midnight (0 minutes, 0 hours) every day
 cron.schedule('0 0 * * *', handleMidnightAccountabilityCheck, {
   timezone: "America/New_York" // Specify your server's timezone
@@ -201,6 +234,13 @@ cron.schedule('1 0 * * *', handleGoalAccountabilityReset, {
   timezone: "America/New_York" // Specify your server's timezone
 });
 console.log('Cron job scheduled: Goal accountability reset will run at 00:01.');
+
+
+// Schedule Job 3 to run at 12:02 AM (2 minutes, 0 hours) every day
+cron.schedule('2 0 * * *', handleAutoCompletionCheck, {
+  timezone: "America/New_York" // Specify your server's timezone
+});
+console.log('Cron job scheduled: Goal auto-completion will run at 00:02.');
 
 
 // --- ------------------------------ ---
