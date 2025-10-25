@@ -19,9 +19,9 @@ import patchBuildingRouter from './API/building/patch.js';
 import deleteBuildingRouter from './API/building/delete.js';
 
 // --- Import Goal Routers ---
-import postGoalRouter from './API/goals/post.js';
-import patchGoalRouter from './API/goals/patch.js';
-import deleteGoalRouter from './API/goals/delete.js';
+import postGoalRouter from './API/goal/post.js';
+import patchGoalRouter from './API/goal/patch.js';
+import deleteGoalRouter from './API/goal/delete.js';
 
 // --- App Setup ---
 const app = express();
@@ -42,9 +42,9 @@ app.use('/building', patchBuildingRouter);
 app.use('/building', deleteBuildingRouter);
 
 // --- Mount Goal Routers ---
-app.use('/goals', postGoalRouter);
-app.use('/goals', patchGoalRouter);
-app.use('/goals', deleteGoalRouter);
+app.use('/goal', postGoalRouter);
+app.use('/goal', patchGoalRouter);
+app.use('/goal', deleteGoalRouter);
 
 // --- Start Server ---
 app.listen(port, () => {
