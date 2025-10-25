@@ -26,9 +26,13 @@ import postGoalRouter from './API/goals/post.js';
 import patchGoalRouter from './API/goals/patch.js';
 import deleteGoalRouter from './API/goals/delete.js';
 
+// --- Import User (Admin) Routers ---
 import getUserRouter from './API/users/get.js';
 import postUserRouter from './API/users/post.js';
 import deleteUserRouter from './API/users/delete.js';
+
+// --- Import Auth Router ---
+import loginRouter from './API/auth/login.js';
 
 // --- App Setup ---
 const app = express();
@@ -56,9 +60,13 @@ app.use('/goals', postGoalRouter);
 app.use('/goals', patchGoalRouter);
 app.use('/goals', deleteGoalRouter);
 
+// --- Mount User (Admin) Routers ---
 app.use('/users', getUserRouter);
 app.use('/users', postUserRouter);
 app.use('/users', deleteUserRouter);
+
+// --- Mount Auth Router ---
+app.use('/auth', loginRouter);
 
 // --- Start Server ---
 app.listen(port, () => {
@@ -67,4 +75,5 @@ app.listen(port, () => {
   console.log('Mounted /building routes from API/building/');
   console.log('Mounted /goals routes from API/goals/');
   console.log('Mounted /users routes from API/users/');
+  console.log('Mounted /auth routes from API/auth/');
 });
