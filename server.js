@@ -4,9 +4,11 @@ dotenv.config(); // Still good practice to load this first
 
 import express from 'express';
 import cors from 'cors';
+import cron from 'node-cron'; // --- IMPORT CRON ---
 
-// --- Import Supabase Client (initializes it) ---
-import './config/supabaseClient.js'; 
+// --- Import Supabase Client ---
+// This file must 'export default supabase' for the cron job to work
+import supabase from './config/supabaseClient.js'; 
 
 // --- Import Profile Routers ---
 import getProfileRouter from './API/profile/get.js';
@@ -67,6 +69,144 @@ app.use('/users', deleteUserRouter);
 
 // --- Mount Auth Router ---
 app.use('/auth', loginRouter);
+
+// --- ------------------------------ ---
+// --- SCHEDULED TASKS ---
+// --- ------------------------------ ---
+
+/**
+ * JOB 1: Runs at 00:00 (Midnight)
+ * This function runs at midnight to enforce accountability.
+ * 1. Finds all unique users.
+ * 2. For each user, counts incomplete goals (due yesterday) that are NOT marked for accountability.
+ * 3. Updates a number of buildings' status to "destroyed" equal to that count.
+ */
+const handleMidnightAccountabilityCheck = async () => {
+  console.log('Running 00:00 accountability check...');
+  
+  try {
+    // Get yesterday's date in 'YYYY-MM-DD' format
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayString = yesterday.toISOString().split('T')[0];
+
+    // 1. Get all distinct user_ids from the goals table
+    const { data: users, error: usersError } = await supabase
+      .from('goals')
+      .select('user_id', { distinct: true });
+
+    if (usersError) throw new Error(usersError.message);
+
+    // 2. Loop through each user
+    for (const user of users) {
+      const userId = user.user_id;
+      
+      // 3. Count their failed goals
+      // A "failed" goal is:
+      // - Not completed (is_completed = false)
+      // - Not accountable (accountability = false)
+      // - Due on or before yesterday (target_date <= yesterday)
+      const { count, error: countError } = await supabase
+        .from('goals')
+        .select('*', { count: 'exact', head: true }) // Special syntax to get only the count
+        .eq('user_id', userId)
+        .eq('is_completed', false)
+        .eq('accountability', false)
+        .lte('target_date', yesterdayString); // lte = less than or equal to
+
+      if (countError) {
+        console.error(`Error counting goals for user ${userId}:`, countError.message);
+        continue; // Skip to the next user
+      }
+
+      const failedGoalCount = count || 0;
+
+      if (failedGoalCount > 0) {
+        console.log(`User ${userId} has ${failedGoalCount} failed goals. Updating buildings to "destroyed"...`);
+
+        // 4. Find that many buildings to destroy
+        // (This finds the 'oldest' buildings by default that are not already destroyed)
+        const { data: buildingsToUpdate, error: buildingsError } = await supabase
+          .from('building') // Assuming your table is named 'building'
+          .select('id')
+          .eq('user_id', userId)
+          .neq('status', 'destroyed') // Only select buildings NOT already destroyed
+          .limit(failedGoalCount);
+        
+        if (buildingsError) {
+          console.error(`Error fetching buildings for user ${userId}:`, buildingsError.message);
+          continue;
+        }
+
+        if (buildingsToUpdate.length > 0) {
+          // 5. Update their status to "destroyed"
+          const idsToUpdate = buildingsToUpdate.map(b => b.id);
+          
+          const { error: updateError } = await supabase
+            .from('building')
+            .update({ status: 'destroyed' }) // Set status to "destroyed"
+            .in('id', idsToUpdate);
+          
+          if (updateError) {
+            console.error(`Error updating buildings for user ${userId}:`, updateError.message);
+          } else {
+            console.log(`Successfully set status to "destroyed" for ${idsToUpdate.length} buildings for user ${userId}.`);
+          }
+        } else {
+          console.log(`User ${userId} had ${failedGoalCount} failed goals, but no active buildings to destroy.`);
+        }
+      } else {
+        console.log(`User ${userId} has no failed goals. No action taken.`);
+      }
+    }
+    console.log('Midnight accountability check finished.');
+
+  } catch (error) {
+    console.error('An error occurred during the midnight check:', error);
+  }
+};
+
+/**
+ * JOB 2: Runs at 00:01 (12:01 AM)
+ * This function runs at 12:01 AM to reset accountability status for all goals.
+ */
+const handleGoalAccountabilityReset = async () => {
+  console.log('Running 00:01 accountability reset...');
+  try {
+    const { error } = await supabase
+      .from('goals')
+      .update({ accountability: false }) // Set accountability to false
+      .eq('accountability', true);      // Only for goals where it's currently true
+
+    if (error) {
+      console.error('Error resetting goal accountability:', error.message);
+    } else {
+      console.log('Successfully reset goal accountability for all users.');
+    }
+  } catch (error) {
+    console.error('An error occurred during the accountability reset:', error);
+  }
+};
+
+
+// Schedule Job 1 to run at midnight (0 minutes, 0 hours) every day
+cron.schedule('0 0 * * *', handleMidnightAccountabilityCheck, {
+  timezone: "America/New_York" // Specify your server's timezone
+});
+console.log('Cron job scheduled: Midnight accountability check will run at 00:00.');
+
+
+// Schedule Job 2 to run at 12:01 AM (1 minute, 0 hours) every day
+cron.schedule('1 0 * * *', handleGoalAccountabilityReset, {
+  timezone: "America/New_York" // Specify your server's timezone
+});
+console.log('Cron job scheduled: Goal accountability reset will run at 00:01.');
+
+
+// --- ------------------------------ ---
+// --- END SCHEDULED TASKS ---
+// --- ------------------------------ ---
+
 
 // --- Start Server ---
 app.listen(port, () => {
