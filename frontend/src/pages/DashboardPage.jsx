@@ -1,8 +1,14 @@
+import BaseBuilder from "../components/BaseBuilder"
+import Header from "../components/Header"
 export default function DashboardPage() {
   return (
-    <div>
-      <h1>Your Fortress</h1>
-      <p>Here you can track your habits and progress.</p>
+    <div style= {{backgroundColor:"yellow"}}>
+      <div>
+        <Header/>
+      </div>
+      <div> 
+    <BaseBuilder/>
+      </div>
     </div>
   )
 }
