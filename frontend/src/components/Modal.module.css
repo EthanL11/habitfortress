@@ -1,0 +1,41 @@
+/* src/components/Modal.module.css */
+.backdrop {
+  position: fixed; /* Stay in place even if page scrolls */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Make sure it's on top */
+}
+
+.modalContent {
+  background-color: var(--color-surface);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  position: relative; /* Needed for positioning the close button */
+  width: 90%;
+  max-width: 500px; /* Limit modal width */
+  color: var(--color-text);
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--color-text-faded);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  color: var(--color-text);
+}
