@@ -23,17 +23,31 @@ export default function LoginPage() {
     setError(null);
 
     try{
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            username: username
-          }
-        }
+      const response = await fetch('../../api/users/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       });
 
-      if (error) throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Error signing up');
+      }
+
+      if(!result.session) {
+        throw new Error("Signup successful, but session data missing from API response.");
+      }
+      const { error: sessionError } = await supabase.auth.setSession(result.session);
+      if (sessionError) {
+        console.error("Error setting frontend session:", sessionError);
+        throw new Error("Signup successful, but failed to update local session.");
+      }
 
       navigate('/dashboard');
     } catch (error) {

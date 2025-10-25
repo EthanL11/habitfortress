@@ -28,6 +28,17 @@ router.post('/', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+
+  const { data:signInData, error:signInError } = await supabase.auth.signInWithPassword({
+    email:email,
+    password:password,
+  });
+
+  if (signInError) {
+    return res.status(500).json({ error: signInError.message });
+  }
+
+  res.status(201).json({user: data.user, session: signInData.session});
+  });
 
 export default router;
