@@ -1,19 +1,18 @@
-// --- Imports ---
-import express from 'express';
+// server.js
 import dotenv from 'dotenv';
+dotenv.config(); // Still good practice to load this first
+
+import express from 'express';
 import cors from 'cors';
 
 // --- Import Routers ---
-// Note: We import supabaseClient.js here just to ensure it runs
-// and is initialized before the routes, but it's not strictly needed
-// if dotenv.config() runs first.
-import './config/supabaseClient.js'; // This initializes the client
+// This import will now work, because it loads its own .env file
+import './config/supabaseClient.js'; 
 import postProfileRouter from './API/profile/post.js';
 import patchProfileRouter from './API/profile/patch.js';
 import deleteProfileRouter from './API/profile/delete.js';
 
-// --- Setup ---
-dotenv.config(); // Load environment variables
+// --- App Setup ---
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -22,7 +21,6 @@ app.use(cors());
 app.use(express.json());
 
 // --- Mount Routers ---
-// All routes from these files will be prefixed with /profiles
 app.use('/profiles', postProfileRouter);
 app.use('/profiles', patchProfileRouter);
 app.use('/profiles', deleteProfileRouter);
