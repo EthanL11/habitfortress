@@ -1,5 +1,5 @@
 /* src/index.css */
-
+@import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
 :root {
   /* --- 1. Your Color Palette --- */
   --color-background: #0a0a1a;
@@ -11,7 +11,7 @@
   --color-danger: #ff6b6b;         /* For errors */
 
   /* --- 2. Your Font Settings --- */
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Jersey 15', Arial, Helvetica, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: var(--color-text); /* Use your new text color variable */

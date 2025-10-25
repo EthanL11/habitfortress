@@ -1,5 +1,8 @@
-import React from 'react' 
-import ReactDOM from 'react-dom/client' 
+import React, { StrictMode } from 'react'; 
+import ReactDOM from 'react-dom/client'; 
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { GameRenderer } from '../game/GameRenderer'; 
 
-const BaseBuilder = () => {
+const BaseBuilder = ({currentZoom}) => {
   const canvasRef = useRef(null);
   const rendererRef = useRef(null);
   const [isGameReady, setIsGameReady] = useState(false); 
@@ -20,7 +20,8 @@ const BaseBuilder = () => {
       rendererRef.current = new GameRenderer(
           canvasRef.current, 
           dummyGameTick, 
-          handleGameReady
+          handleGameReady,
+          currentZoom
       );
     }
     
@@ -31,6 +32,14 @@ const BaseBuilder = () => {
       }
     };
   }, []); 
+
+  useEffect(() => {
+      // This runs ONLY when currentZoom changes (after the component mounts)
+      if (isGameReady && rendererRef.current) {
+        rendererRef.current.setZoom(currentZoom); 
+        console.log(`Zoom updated to: ${currentZoom}`); // Check console to confirm this fires
+      }
+  }, [currentZoom, isGameReady]); // Dependencies: updates when zoom changes or game readiness changes
 
   // --- Dedicated Effect to Place Initial Building (Runs when isGameReady is true) ---
   useEffect(() => {
@@ -43,12 +52,10 @@ const BaseBuilder = () => {
 
 
   return (
-    <div style={{ padding: '20px', backgroundColor: 'blue', textAlign: 'center'}}>
-      <h1 style = {{color: 'black'}}>Your Fortress {isGameReady ? '':' Map loading'}</h1>
-      
-      {/* 🗺️ The Canvas: The Game View */}
-      <div style={{ margin: '20px auto', border: '1px solid black', width: window.innerWidth, height: window.innerHeight }}>
-        <canvas ref={canvasRef} width="800" height="600" />
+    <div style={{ padding: '20px',backgroundColor: 'transparent', textAlign: 'center'}}>
+    <h1 style ={{fontSize: '100px', color: 'white'}}>Habit Fortress</h1>
+      <div style={{ margin: '20px auto', width: window.innerWidth, height: window.innerHeight }}>
+        <canvas style = {{border: 'solid', borderWidth: '10px', borderColor: 'black'}}ref={canvasRef} width="1000" height="780" />
       </div>
     </div>
   );
