@@ -26,6 +26,10 @@ import postGoalRouter from './API/goals/post.js';
 import patchGoalRouter from './API/goals/patch.js';
 import deleteGoalRouter from './API/goals/delete.js';
 
+import getUserRouter from './API/users/get.js';
+import postUserRouter from './API/users/post.js';
+import deleteUserRouter from './API/users/delete.js';
+
 // --- App Setup ---
 const app = express();
 const port = process.env.PORT || 5000;
@@ -52,10 +56,15 @@ app.use('/goals', postGoalRouter);
 app.use('/goals', patchGoalRouter);
 app.use('/goals', deleteGoalRouter);
 
+app.use('/users', getUserRouter);
+app.use('/users', postUserRouter);
+app.use('/users', deleteUserRouter);
+
 // --- Start Server ---
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
   console.log('Mounted /profiles routes from API/profile/');
   console.log('Mounted /building routes from API/building/');
   console.log('Mounted /goals routes from API/goals/');
+  console.log('Mounted /users routes from API/users/');
 });
