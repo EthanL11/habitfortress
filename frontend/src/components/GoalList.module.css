@@ -1,5 +1,6 @@
-.goalList {
+.goalList{
   display: flex;
-  flex-direction: column;
-  gap: 1rem; /* This puts 1rem of space between each GoalItem */
+  flex-direction: row;
+  border-color: black;
+  border-style: solid;
 }

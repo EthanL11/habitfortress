@@ -1,0 +1,144 @@
+/* src/components/EditGoalForm.module.css */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Space between input groups */
+  color: var(--color-text); /* Ensure text is readable */
+}
+
+.title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--color-primary);
+  font-size: 1.5em; /* Slightly smaller than main titles */
+  word-break: break-word; /* Prevent long names from overflowing */
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.inputGroup label {
+  font-size: 0.9em;
+  color: var(--color-text-faded);
+  margin-bottom: 0.1rem;
+}
+
+/* Common styles for text input, date, and textarea */
+.inputGroup input[type="text"],
+.inputGroup input[type="date"],
+.inputGroup select, /* Added select styling just in case */
+.inputGroup textarea {
+  padding: 0.7em 0.9em;
+  font-size: 1em;
+  border: 1px solid #444; /* Slightly darker border */
+  background-color: var(--color-background); /* Use main background for inputs */
+  color: var(--color-text);
+  border-radius: 6px;
+  font-family: inherit; /* Ensure consistent font */
+  box-sizing: border-box; /* Include padding/border in width */
+  width: 100%; /* Make inputs fill container */
+}
+
+/* Focus styles */
+.inputGroup input:focus,
+.inputGroup select:focus,
+.inputGroup textarea:focus {
+   outline: none;
+   border-color: var(--color-primary);
+   box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.3); /* Subtle glow on focus */
+}
+
+/* Specific style for textarea */
+.inputGroup textarea {
+  min-height: 80px; /* Minimum height */
+  resize: vertical; /* Allow vertical resizing only */
+}
+
+/* Styling for the checkbox group */
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem; /* Add some space above */
+    cursor: pointer; /* Indicate the whole area is clickable */
+}
+
+.checkboxGroup label {
+    font-size: 0.95em;
+    color: var(--color-text);
+    cursor: pointer;
+    margin-bottom: 0; /* Override default label margin */
+}
+
+.checkboxGroup input[type="checkbox"] {
+    width: 18px; /* Slightly larger checkbox */
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--color-primary); /* Style the checkmark color */
+    margin: 0; /* Remove default margin */
+}
+
+/* Group for Save/Delete buttons */
+.buttonGroup {
+  margin-top: 1.5rem; /* Space above buttons */
+  display: flex;
+  justify-content: space-between; /* Puts buttons on opposite ends */
+  gap: 1rem; /* Space between buttons */
+}
+
+/* Common styles for both buttons */
+.saveButton,
+.deleteButton {
+  padding: 0.7em 1.5em;
+  font-size: 1em;
+  font-weight: 500;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+  flex-grow: 1; /* Make buttons share space if needed */
+  text-align: center;
+}
+
+/* Save button specific styles */
+.saveButton {
+  background-color: var(--color-primary);
+  color: white;
+}
+.saveButton:hover:not(:disabled) { /* Only apply hover when not disabled */
+  background-color: var(--color-primary-hover);
+}
+
+/* Delete button specific styles */
+.deleteButton {
+  background-color: var(--color-danger);
+  color: white;
+}
+.deleteButton:hover:not(:disabled) {
+  background-color: #e04a4a; /* Darker red on hover */
+}
+
+/* Disabled state for both buttons */
+.saveButton:disabled,
+.deleteButton:disabled {
+   background-color: #555; /* Dark gray when disabled */
+   cursor: not-allowed;
+   opacity: 0.7; /* Make it look faded */
+}
+
+/* Error message styling */
+.error {
+  color: var(--color-danger);
+  background-color: rgba(255, 107, 107, 0.1);
+  border: 1px solid var(--color-danger);
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.9em;
+  margin-top: 0;
+  margin-bottom: 1rem; /* Space below error */
+}
