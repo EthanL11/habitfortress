@@ -1,0 +1,1 @@
+A game that manages your good habits and eliminates your addictions.
