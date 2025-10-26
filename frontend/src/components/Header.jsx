@@ -45,7 +45,7 @@ export default function Header() {
     }, []);
 
     return (
-        <div style={{ textAlign: "center", backgroundColor: 'purple' }}>
+        <div style={{ textAlign: "center", backgroundColor: 'black' }}>
             <div>Welcome, {username}</div>
             <div>Points: {points}</div>
         </div>

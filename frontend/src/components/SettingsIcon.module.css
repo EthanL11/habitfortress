@@ -1,0 +1,51 @@
+/* src/components/SettingsIcon.module.css */
+
+.settingsIconContainer {
+  position:absolute; /* Position relative to the nearest positioned ancestor */
+  top: 1vh;          /* Adjust spacing from top */
+  right: 1vh;         /* Adjust spacing from right */
+  z-index: 10;        /* Keep it above other elements */
+}
+
+.iconButton {
+  /* Background image properties */
+  background-size: contain;    /* Scale image down to fit */
+  background-repeat: no-repeat;
+  background-position: center;
+  
+  /* Size */
+  width: 40px;
+  height: 40px;
+  
+  /* Appearance */
+  background-color: transparent; /* No background color */
+  border: none;                  /* No border */
+  padding: 0;                  /* No padding */
+  cursor: pointer;
+  border-radius: 50%; /* Make it circular if desired */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.iconButton:hover {
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.iconButton:focus,
+.iconButton:focus-visible {
+   outline: none; /* Accessibility outline */
+   
+}
+
+
+.settingsPanel {
+  position: absolute; /* Position relative to the container */
+  top: 50px; /* Position below the button (adjust as needed) */
+  right: 0; 
+  padding: 10px;
+  background: var(--color-surface); /* Use CSS variable */
+  border: 1px solid #555; /* Slightly darker border */
+  border-radius: 8px; /* Match other rounded corners */
+  width: 320px; /* Fixed width */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 11; /* Ensure panel is above button if needed */
+}

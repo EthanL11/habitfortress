@@ -1,58 +1,45 @@
+// src/components/SettingsIcon.jsx
 import React, { useState } from 'react';
-import Settings from './Settings'; // Assuming your slider is here
-import gearcog from '/src/assets/gearcoh.png'
+import Settings from './Settings';
+import gearcog from '/src/assets/gearcoh.png';
+import styles from './SettingsIcon.module.css';
 
-// Placeholder for a simple cog icon character
-
-export default function SettingsIcon({ currentZoom, setZoom }) {
-    // 💥 State to manage whether the slider panel is visible
+// --- 👇 ACCEPT THE NEW PROPS HERE ---
+export default function SettingsIcon({
+    currentZoom, setZoom,
+    profile, onUpdateUsername, onDeleteAccount,
+    onLogout // <-- Accept it here
+})  {
     const [isPanelVisible, setIsPanelVisible] = useState(false);
 
-    // Function to toggle the visibility state
     const togglePanel = () => {
         setIsPanelVisible(prev => !prev);
     };
 
     return (
-        <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10 }}>
-            
-            {/* 1. The Cog Icon Button */}
+        <div className={styles.settingsIconContainer}>
             <button
-            
-                onClick={togglePanel} 
-                style={{ 
-                    backgroundImage: `url(${gearcog})`,
-                    backgroundSize: 'contain',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    width: '40x',
-                    height: '40px',
-                    backgroundColor: 'transparent'
-
-                    
-                    
-                }}
+                className={styles.iconButton}
+                onClick={togglePanel}
+                style={{ backgroundImage: `url(${gearcog})` }}
                 aria-expanded={isPanelVisible}
                 aria-controls="zoom-settings-panel"
-            >
-            </button>
-
-            {/* 2. The Slider Panel (Conditionally Rendered) */}
-            {/* 💥 Only render the Settings component if isPanelVisible is TRUE */}
+                aria-label="Open settings"
+            />
             {isPanelVisible && (
-                <div 
-                    id="zoom-settings-panel" 
-                    style={{ 
-                        position: 'absolute', 
-                        right: '0', 
-                        padding: '10px',
-                        background: '#333',
-                        border: '1px solid #555',
-                        borderRadius: '5px',
-                        width: '320px'
-                    }}
+                <div
+                    id="zoom-settings-panel"
+                    className={styles.settingsPanel}
                 >
-                    <Settings currentZoom={currentZoom} setZoom={setZoom} />
+                    {/* --- 👇 PASS THE PROPS DOWN TO SETTINGS HERE --- */}
+                    <Settings
+                        currentZoom={currentZoom}
+                        setZoom={setZoom}
+                        profile={profile} // <-- Pass profile
+                        onUpdateUsername={onUpdateUsername} // <-- Pass update function
+                        onDeleteAccount={onDeleteAccount} // <-- Pass delete function\
+                        onLogout={onLogout}
+                    />
                 </div>
             )}
         </div>
