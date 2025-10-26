@@ -5,3 +5,15 @@
   display: flex;
   flex-direction: column;
 }
+
+.pageWrapper {
+  min-height: 100vh; /* Full screen height */
+  background-size: cover; /* Make background image cover */
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 1rem; /* Add some padding around the edges */
+  box-sizing: border-box;
+  display: flex; /* Use flexbox for overall layout */
+  flex-direction: column; /* Stack main content and goals */
+  gap: 1rem; /* Space between main content and goals */
+}

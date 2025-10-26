@@ -1,0 +1,186 @@
+/* src/components/Settings.module.css */
+
+.settingsContainer {
+  padding: 15px 20px; 
+  width: 100%;       
+  max-width: 350px; 
+  background-color: var(--color-surface); 
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin: 0; /* Remove centering margin if inside another positioned element */
+  color: var(--color-text); /* Ensure text is visible */
+}
+
+/* Section titles (Account, Zoom Scale) */
+.sectionTitle {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.1em; /* Slightly smaller */
+  color: var(--color-primary); 
+  border-bottom: 1px solid #444; /* Add separator */
+  padding-bottom: 0.4rem;
+}
+
+/* User Info Specific Styles */
+.userInfoSection {
+  margin-bottom: 1rem;
+}
+
+.displayUsername {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.displayUsername p {
+  margin: 0;
+  color: var(--color-text-faded);
+}
+.displayUsername strong {
+  color: var(--color-text);
+  margin-left: 5px;
+}
+
+.editButton { /* Simple text button */
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.9em;
+}
+.editButton:hover {
+  text-decoration: underline;
+}
+
+.editUsernameForm {
+  display: flex;
+  gap: 0.5rem; /* Space between input and buttons */
+  align-items: center; /* Align items vertically */
+  margin-bottom: 1rem;
+}
+
+.usernameInput {
+  flex-grow: 1; /* Input takes most space */
+  padding: 0.5em 0.7em;
+  font-size: 0.95em;
+  border: 1px solid #444;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  border-radius: 4px;
+}
+.usernameInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.saveButton,
+.cancelButton {
+  padding: 0.5em 0.8em;
+  font-size: 0.9em;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+.saveButton {
+  background-color: var(--color-primary);
+  color: white;
+}
+.cancelButton {
+  background-color: #555;
+  color: white;
+}
+.saveButton:hover:not(:disabled) { background-color: var(--color-primary-hover); }
+.cancelButton:hover:not(:disabled) { background-color: #777; }
+.saveButton:disabled,
+.cancelButton:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.logoutButton {
+  display: block; /* Make it take full width */
+  width: 100%;
+  padding: 0.6em 1em;
+  margin-top: 0.5rem; /* Space above */
+  margin-bottom: 0.5rem; /* Space below before delete */
+  font-size: 0.9em;
+  font-weight: 500;
+  border-radius: 4px;
+  border: 1px solid #777; /* Neutral border */
+  background-color: transparent;
+  color: var(--color-text-faded); /* Use faded text */
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.logoutButton:hover:not(:disabled) {
+  background-color: #555; /* Darker grey on hover */
+  color: white;
+  border-color: #555;
+}
+.logoutButton:disabled {
+   opacity: 0.6; cursor: not-allowed;
+}
+
+
+
+.deleteAccountButton {
+  display: block; /* Make it take full width */
+  width: 100%;
+  padding: 0.6em 1em;
+  margin-top: 1rem;
+  font-size: 0.9em;
+  font-weight: 500;
+  border-radius: 4px;
+  border: 1px solid var(--color-danger);
+  background-color: transparent;
+  color: var(--color-danger);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.deleteAccountButton:hover:not(:disabled) {
+  background-color: var(--color-danger);
+  color: white;
+}
+.deleteAccountButton:disabled {
+   opacity: 0.6; cursor: not-allowed;
+}
+
+.errorText { /* Consistent error styling */
+  color: var(--color-danger);
+  font-size: 0.85em;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+
+/* Divider between sections */
+.divider {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 1.5rem 0; /* Add space around divider */
+}
+
+/* Zoom Specific Styles */
+.zoomSection {
+  /* No extra styles needed for the container */
+}
+
+.zoomSlider {
+  width: 100%; 
+  cursor: pointer;
+  accent-color: var(--color-primary); 
+  height: 8px; 
+  border-radius: 4px; 
+}
+/* Optional detailed slider styles (keep if you like them) */
+.zoomSlider::-webkit-slider-runnable-track { /* ... */ }
+.zoomSlider::-webkit-slider-thumb { /* ... */ }
+.zoomSlider::-moz-range-track { /* ... */ }
+.zoomSlider::-moz-range-thumb { /* ... */ }
+
+.currentValueText {
+  margin-top: 10px; 
+  margin-bottom: 0;
+  text-align: center;
+  font-size: 0.95em;
+  color: var(--color-text-faded); 
+}
